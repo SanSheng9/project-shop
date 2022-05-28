@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+from secret_shop.secrets import DB_LOGIN, DB_PASSWORD, DB_NAME
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -89,9 +90,9 @@ WSGI_APPLICATION = 'secret_shop.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'secret-shop',
-        'USER': 'root',
-        'PASSWORD': '1347',
+        'NAME': DB_NAME,
+        'USER': DB_LOGIN,
+        'PASSWORD': DB_PASSWORD,
         'HOST': 'localhost',
         'PORT': '3306',
     }
@@ -190,6 +191,24 @@ AUTH_USER_MODEL = 'shop.UserProfile'
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
+]
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'host',
+    'user-agent',
+    'x-csrf-token',
+    'x-xsrf-token',
+    'x-requested-with',
+    'content-disposition',
+    'Set-Cookie',
+    'x-cookie',
+    'Cookie',
+    'Cookies'
 ]
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
