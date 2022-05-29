@@ -3,7 +3,7 @@ from io import BytesIO
 
 from PIL import Image
 
-from shop.models.image_model import Image
+from shop.models.image_model import ImageObject
 
 
 class ImageSaver:
@@ -31,7 +31,6 @@ class ImageSaver:
         original = Image.open(image)
         format = ''
 
-        print(original.format)
         if original.format == "PNG":
             format = '.png'
         else:
@@ -45,20 +44,19 @@ class ImageSaver:
 
         original_name = str(uuid.uuid4()) + format
         original_bytes = BytesIO()
-        original.save(original_bytes, format=original.format, optimize=True, quality=90) #progressive=True, 'JPEG'
+        original.save('media/'+original_name, format=original.format, optimize=True, quality=90) #progressive=True, 'JPEG'
         original_bytes.seek(0)
 
         miniature_name = str(uuid.uuid4()) + format
         miniature_bytes = BytesIO()
-        miniature.save(miniature_bytes, format=original.format, quality=90)
+        miniature.save('media/'+miniature_name, format=original.format, quality=90)
         miniature_bytes.seek(0)
 
         preview_name = str(uuid.uuid4()) + format
         preview_bytes = BytesIO()
-        preview.save(preview_bytes, format=original.format, quality=90)
+        preview.save('media/'+preview_name, format=original.format, quality=90)
         preview_bytes.seek(0)
-
-        return Image.create(
+        return ImageObject.create(
             original_name, miniature_name, preview_name,
             original.size[0], original.size[1],
             miniature.size[0], miniature.size[1],

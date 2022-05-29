@@ -1,8 +1,23 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
-from shop.models import Product, UserProductRelation, UserProfile
+from shop.models import Product, UserProductRelation, UserProfile, ImageObject
 
+
+class ImageSerializer(ModelSerializer):
+    original = serializers.FilePathField('/media')
+    miniature = serializers.FilePathField('/media')
+    preview = serializers.FilePathField('/media')
+    original_width = serializers.IntegerField()
+    original_height = serializers.IntegerField()
+    miniature_width = serializers.IntegerField()
+    miniature_height = serializers.IntegerField()
+    preview_width = serializers.IntegerField()
+    preview_height = serializers.IntegerField()
+    class Meta:
+        model = ImageObject
+        fields = ('id','original', 'miniature', 'preview', 'original_width', 'original_height', 'miniature_width', 'miniature_height',
+               'preview_width', 'preview_height')
 
 class ProductSerializer(ModelSerializer):
     rating = serializers.DecimalField(max_digits=3, decimal_places=2, read_only=True)
