@@ -5,9 +5,9 @@ from shop.models import Product, UserProductRelation, UserProfile, ImageObject
 
 
 class ImageSerializer(ModelSerializer):
-    original = serializers.FilePathField('/media')
-    miniature = serializers.FilePathField('/media')
-    preview = serializers.FilePathField('/media')
+    original = serializers.FilePathField(path = '/media/')
+    miniature = serializers.FilePathField(path = '/media/')
+    preview = serializers.FilePathField(path = '/media/')
     original_width = serializers.IntegerField()
     original_height = serializers.IntegerField()
     miniature_width = serializers.IntegerField()

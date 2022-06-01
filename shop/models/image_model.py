@@ -2,9 +2,9 @@ from django.db import models
 from shop.models.product_model import Product
 
 class ImageObject(models.Model):
-    img_original = models.ImageField(upload_to='photos/%Y/%m/%d', blank=False, default='default.svg')
-    img_miniature = models.ImageField(upload_to='photos/%Y/%m/%d', blank=False, default='default.svg')
-    img_preview = models.ImageField(upload_to='photos/%Y/%m/%d', blank=False, default='default.svg')
+    img_original = models.ImageField(upload_to='media/', blank=False, default='default.svg')
+    img_miniature = models.ImageField(upload_to='media/', blank=False, default='default.svg')
+    img_preview = models.ImageField(upload_to='media/', blank=False, default='default.svg')
     original = models.CharField(max_length=255)
     miniature = models.CharField(max_length=255)
     preview = models.CharField(max_length=255)
@@ -37,6 +37,16 @@ class ImageObject(models.Model):
             preview_width=preview_width, preview_height=preview_height
         )
 
-class ImageRelation(models.Model):
+class ImageProductRelation(models.Model):
     image = models.ForeignKey(ImageObject, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
+    def create(images, product):
+        items = []
+        productObject = Product.objects.get(id=product)
+        for image in images:
+            imageObject = ImageObject.objects.get(id=image)
+            items.append(ImageProductRelation(image=imageObject, product=productObject))
+
+        ImageProductRelation.objects.bulk_create(items)
+        
