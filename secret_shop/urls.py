@@ -19,12 +19,14 @@ from django.urls import path, include
 from rest_framework.routers import SimpleRouter
 
 from secret_shop import settings
-from shop.views import ProductViewSet, UserProductsRelationView
+from shop.views import ProductViewSet, UserProductsRelationView, OrderListViewSet
 
 router = SimpleRouter()
 
 router.register(r'product', ProductViewSet)
 router.register(r'product_relations', UserProductsRelationView)
+router.register(r'order', OrderListViewSet)
+#router.register(r'order_products', OrderProductViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

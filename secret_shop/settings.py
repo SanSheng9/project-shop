@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 from secret_shop.secrets import DB_LOGIN, DB_PASSWORD, DB_NAME
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     'corsheaders',
 
     'rest_framework',
+    'phonenumber_field',
 
     'rest_framework_simplejwt',
     "debug_toolbar",
@@ -183,7 +185,6 @@ SIMPLE_JWT = {
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
-
 MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
 

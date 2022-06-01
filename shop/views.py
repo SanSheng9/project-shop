@@ -5,17 +5,21 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.mixins import UpdateModelMixin
+from rest_framework.mixins import UpdateModelMixin, CreateModelMixin, ListModelMixin, RetrieveModelMixin
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework.viewsets import ModelViewSet, GenericViewSet, ReadOnlyModelViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from shop.logic import createOrderProductRelationModel
 from shop.models import Product, UserProductRelation, UserProfile
+from shop.models.order_model import Order
 from shop.permissions import IsOwnerProfileOrReadOnly, IsOwnerOrStaffOrReadOnly
-from shop.serializers import ProductSerializer, UserSerializer, UserProductRelationSerializer
+from shop.serializers import ProductSerializer, UserSerializer, UserProductRelationSerializer, OrderSerializer
+
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView, TokenObtainPairView
+
 
 # Product
 class ProductViewSet(ModelViewSet):
@@ -62,6 +66,7 @@ class LogoutView(APIView):
         except Exception as e:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
+
 # User relation
 class UserProductsRelationView(UpdateModelMixin, GenericViewSet):
     permission_classes = [IsAuthenticated]
@@ -72,4 +77,45 @@ class UserProductsRelationView(UpdateModelMixin, GenericViewSet):
     def get_object(self):
         obj, _ = UserProductRelation.objects.get_or_create(user=self.request.user, product_id=self.kwargs['product'])
         return obj
+
+
+# Order
+class OrderCreateView(APIView):
+    def post(self, request):
+        if self.request.user.is_authenticated:
+            request.data['username'] = self.request.user
+            request.data['anonymous'] = False
+        else:
+            request.data['username'] = None
+            request.data['anonymous'] = True
+        product = request.COOKIES.get('bucket')
+        request.data['products'] = product
+        serializer = OrderSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        createOrderProductRelationModel(product, self.id)
+        return Response(serializer.data)
+
+
+class OrderListViewSet(ReadOnlyModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+
+# class OrderViewSet(ModelViewSet):
+#     queryset = Order.objects.all()
+#     serializer_class = OrderSerializer
+#
+#     def perform_create(self, request, serializer):
+#         if self.request.user.is_authenticated:
+#             serializer.validated_data['username'] = self.request.user
+#             serializer.validated_data['anonymous'] = False
+#         else:
+#             serializer.validated_data['username'] = None
+#             serializer.validated_data['anonymous'] = True
+#         serializer.save()
+
+        # products = UserProductRelation.objects.values_list('product', flat=True).filter(user=self.request.user, bucket=True)
+        # for p in products:
+        #     OrderProductRelation.objects.create(order=self.id, product=p)
+
 

@@ -1,0 +1,7 @@
+/.coverage
+venv
+.idea
+/htmlcov/
+/static/
+/media/photos/
+/secret_shop/secrets.py

@@ -1,8 +1,8 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 
-from shop.models import Product, UserProductRelation, UserProfile
-
+from shop.models import Product, UserProductRelation, UserProfile, ImageObject
+from shop.models.order_model import Order
 
 @admin.register(Product)
 class ProductAdmin(ModelAdmin):
@@ -15,3 +15,12 @@ class UserProfileAdmin(ModelAdmin):
 @admin.register(UserProductRelation)
 class UserProductRelationAdmin(ModelAdmin):
     pass
+
+@admin.register(ImageObject)
+class ImageObjectAdmin(ModelAdmin):
+    pass
+
+@admin.register(Order)
+class OrderAdmin(ModelAdmin):
+    pass
+
